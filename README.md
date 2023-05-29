@@ -2,15 +2,15 @@
 
 All my data projects in the bootcamp. There are 10 sprints as follow.
 
-- Google Sheets
-- SQL
-- R programming
-- Data Transformation
-- Data Visualization
-- Essential Statistics
-- Essential ML
-- Python
-- Python for Data Analyst
-- Dashboard
+01. Google Sheets
+02. SQL
+03. R programming
+04. Data Transformation
+05. Data Visualization
+06. Essential Statistics
+07. Essential ML
+08. Python
+09. Python for Data Analyst
+10. Dashboard
 
 Verified Badge:
