@@ -1,0 +1,203 @@
+---
+title: "Sprint 05 - Data Viz HW"
+author: "Mint"
+date: "2023-04-27"
+output: html_document
+---
+
+```{r echo=FALSE, results='hide', message=FALSE}
+library("tidyverse")
+```
+
+# Data Visualization of Diamonds
+A report on analyzing the data of diamonds (data provided by ggplot2).
+
+
+## Understanding the data
+
+```{r}
+glimpse(diamonds)
+```
+
+Variables|Description|Values
+--- | ------ | -----
+price | price in US dollars |$326–$18,823
+carat | weight of the diamond |0.2–5.01
+cut | quality of the cut |Fair, Good, Very Good, Premium, Ideal
+color | diamond colour |from D (best) to J (worst)
+clarity | a measurement of how clear the diamond is |I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)
+x | length in mm |0–10.74
+y | width in mm |0–58.9
+z | depth in mm |0–31.8
+depth | total depth percentage = z / mean(x, y) = 2 * z / (x + y) |43–79
+table | width of top of diamond relative to widest point |43–95
+
+### 1. Carat
+![Carat](https://www.gloriousdiamonds.net/uploads/blog_en_gallery/carat.jpg)
+Image source: https://www.gloriousdiamonds.net/en/blog/the4cs
+
+The carat weight of a diamond is used to determine its size. Because one carat is divided into 100 points, a diamond weighing 75 points weighs 0.75 carat. As larger diamonds are rarer and more valuable, their price rises with their carat weight.
+
+
+### 2. Cut
+![](https://www.gloriousdiamonds.net/uploads/blog_en_gallery/cut.jpg)
+Image source: https://www.gloriousdiamonds.net/uploads/blog_en_gallery/cut.jpg
+
+This is how they typically rank the diamonds' cut:
+
+Rank|Description
+---|---------
+Excellent	| Excellent Cut Diamonds have even more fire and luster of any diamond
+Very Good	| Very Good Cut Diamonds are known for their brightness and fire. Very Good diamonds appear to sparkle similarly to Excellent diamonds with naked eye
+Good | Good Cut Diamonds represents brilliance and sparkle, with much of the light reflecting through the table to the viewer’s eye.
+Fair |	Light easily departs through the bottom and sides of a fair cut diamond, resulting in minimal brilliance.
+Poor |	Poor cut diamonds have almost no radiance, brilliance, or fire.
+
+### 3. Color
+![](https://www.gloriousdiamonds.net/uploads/blog_en_gallery/color.jpg)
+Image source: https://www.gloriousdiamonds.net/uploads/blog_en_gallery/color.jpg
+
+### 4. Clarity
+![](https://www.gloriousdiamonds.net/uploads/blog_en_gallery/clarity.jpg)
+Image source: https://www.gloriousdiamonds.net/uploads/blog_en_gallery/clarity.jpg
+
+- FL **(Flawless)** No inclusions and no blemishes visible under 10x magnification
+- IF **(Internally Flawless)** No inclusions evident under 10x magnification
+- VVS1-VVS2 **(Very, Very Slightly Included)** Inclusions so slight they are tough for a skilled grader to see under 10x magnification
+- VS1-VS2 **(Very Slightly Included)** Inclusions are noticeable with effort under 10x magnification, but can be classified as minor
+- SI1-SI2 **(Slightly Included)** Inclusions are noticeable under 10x magnification
+- I1-I2-I3 **(Included)** Inclusions are visible under 10x magnification which may impact transparency and brilliance
+
+### 5. Depth
+![](https://www.diamonds.pro/wp-content/uploads/2022/02/depth.jpg)
+
+Image source: https://www.diamonds.pro/wp-content/uploads/2022/02/depth.jpg
+
+There’s no “best” depth for every type of diamond. Instead, the ideal depth range depends on the cut.
+
+### 6. Table
+![](https://www.diamonds.pro/wp-content/uploads/2022/02/table.jpg)
+
+Image source: https://www.diamonds.pro/wp-content/uploads/2022/02/table.jpg
+
+A good table needs to be balanced — it needs to be large enough to let lots of light into the stone, but not so big that it doesn’t refract light onto the crown of the diamond. Therefore it also depends on the cut.
+
+
+
+
+## Data Visualization
+
+### Chart 1 - One Variable (Numerical)
+
+```{r}
+ggplot(diamonds, aes(carat)) +
+  geom_histogram(bins=25,fill = "skyblue") +
+  theme_classic() +
+  labs(
+    title = "Determining Amount of Diamonds in Each Carat Range",
+    x = "Carat",
+    y = "Number of Diamonds",
+    subtitle = "Most diamonds are available in the 0.25 - 0.5 carat.",
+    caption = "Datasource: diamonds in ggplot2"
+  )
+```
+
+### Chart 2 - One Variable (Character/Factor)
+
+```{r}
+diamonds %>%
+  mutate(carat = ifelse(diamonds$carat <= 1, "1",
+       ifelse(diamonds$carat <= 2, "2",
+              ifelse(diamonds$carat <= 3, "3",
+                     ifelse(diamonds$carat <= 4, "4",
+                            ifelse(diamonds$carat <= 5,"5","6")))))) %>%
+  count(carat) %>%
+  ggplot(aes(carat,n)) +
+  geom_col(fill = "aliceblue") +
+  labs(
+    title = "Number of Diamonds by Carat",
+    x = "Carat",
+    y = "Number of Diamonds",
+    caption = "Datasource: diamonds in ggplot2"
+  ) +
+  theme_classic()
+```
+
+
+### Chart 3 - Two Variables (Both Numerical)
+
+```{r}
+diamonds %>%
+  ggplot(aes(table,depth,col=cut)) +
+  geom_point(size = 1,alpha = 0.5) +
+  scale_color_brewer(type = "div", palette = 5) +
+  labs(
+    title = "Relationship On a Diamond's Table and Depth to its Cut Scale",
+    subtitle = "We can see that to get an ideal cut, the size of its table and depth is centralize at a certain point.",
+    x = "Table",
+    y = "Depth",
+    caption = "Datasource: diamonds in ggplot2"
+  ) +
+  theme_minimal()
+```
+
+
+### Chart 4 - Two Variables (Both Categorical)
+
+```{r}
+diamonds %>%
+  ggplot(aes(color,fill=clarity)) +
+  geom_bar(position="fill") +
+  scale_fill_manual(
+    values = c("#414833",
+               "#656d4a",
+               "#a4ac86",
+               "#c2c5aa",
+               "#b6ad90",
+               "#a68a64",
+               "#936639",
+               "#7f4f24")
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Relationship Of The Quantity Of Diamond's Clarity In Each Cut Category",
+    subtitle = "Diamond with the best color (D) are ranked higher in clarity (I1, SI2, SI1).",
+    x = "Color",
+    y = "Amount Of Diamonds In Percentage",
+    caption = "Datasource: diamonds in ggplot2"
+  )
+```
+
+
+### Chart 5 - Joining Charts
+
+```{r echo=FALSE, results='hide', message=FALSE}
+library("patchwork")
+```
+
+```{r}
+h1 <- ggplot(diamonds %>% sample_n(500),
+       aes(carat)) +
+  geom_histogram(bins = 20)
+h2 <- ggplot(diamonds %>% sample_n(500),
+       aes(cut)) +
+  geom_bar()
+h3 <- ggplot(diamonds %>% sample_n(500),
+       aes(color)) +
+  geom_bar()
+h4 <- ggplot(diamonds %>% sample_n(500),
+       aes(clarity)) +
+  geom_bar()
+h5 <- ggplot(diamonds %>% sample_n(500),
+       aes(depth)) +
+  geom_histogram(bins = 20)
+h6 <- ggplot(diamonds %>% sample_n(500),
+       aes(price)) +
+  geom_histogram(bins = 20)
+h7 <- ggplot(diamonds %>% sample_n(500),
+             aes(table)) +
+  geom_histogram(bins = 20)
+
+(h1 + h3 + h4) / (h5 + h6 + h7) / h2
+```
+
