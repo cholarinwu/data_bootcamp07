@@ -13,4 +13,4 @@ All my data projects in the bootcamp. There are 10 sprints as follow.
 09. Python for Data Analyst
 10. Dashboard
 
-Verified Badge:
+Verified Badge: https://api.badgr.io/public/assertions/rMHUl6lKTim2LCoLF7X25w
