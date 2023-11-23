@@ -1,6 +1,6 @@
 # Data Science Bootcamp 07
 
-All my data projects in the bootcamp. There are 10 sprints as follow.
+All my data projects from the Data Rockie bootcamp. There are 10 sprints as follow.
 
 01. Google Sheets
 02. SQL
